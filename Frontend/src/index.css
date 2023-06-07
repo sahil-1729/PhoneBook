@@ -1,0 +1,22 @@
+h1{
+    color:aqua;
+    font-style:oblique
+}
+.specific{
+    font-weight: 800;
+    color:blueviolet;
+}
+.error{
+    color:rgb(17, 102, 228);
+    border-style: dashed;
+    border-color: aqua;
+    padding: 0.5em;
+    /* font-weight: 900; */
+    font-family: 'Open Sans', sans-serif;
+    margin-bottom: 1em;
+}
+*{
+    font-family: 'Montserrat', sans-serif;
+    /* font-family: 'Open Sans', sans-serif; */
+
+}
