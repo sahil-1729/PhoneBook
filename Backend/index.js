@@ -134,6 +134,7 @@ app.get('/api/persons',(request,response,next)=>{
   .catch(error=>next(error))
 })
 
+
 //GET ALL CONTACTS
 // app.get('/api/persons',(request,response)=>{
 //     // console.log(`get method worked`)
@@ -249,6 +250,18 @@ app.post('/api/persons',(request,response)=>{
 
 
 //JO bhi urls hoenge other than the above, they will get error as given below 
+
+app.put('/api/persons/:id',(request,response,next)=>{
+  const body = request.body
+  console.log(body)
+  const newContact = {
+    name : body.name,
+    number : body.number
+  }
+  contact.findByIdAndUpdate(request.params.id,newContact,{new:true})
+  .then(result=>response.json(result))
+  .catch(error=>next(error))
+})
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({error:'unknown endpoint'})
