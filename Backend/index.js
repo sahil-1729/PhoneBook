@@ -1,9 +1,14 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 // const time = require('express-timestamp')
 // app.use(time.init)
 
 const cors = require('cors')
+
+const contact = require('./models/connectionDB')
+
 app.use(cors())
 app.use(express.static('build'))
 
@@ -18,6 +23,7 @@ morgan.token('body',function getBody(request){
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 // app.use(morgan('dev'))
+
 app.use(express.json())
 let persons =[{
   "id": 1,
@@ -121,13 +127,19 @@ let persons =[{
   "number": "5764638542"
 }]
 
-
+app.get('/api/persons',(request,response)=>{
+  contact.find({})
+  .then(result=>{
+    response.send(result)
+  })
+})
 
 //GET ALL CONTACTS
-app.get('/api/persons',(request,response)=>{
-    // console.log(`get method worked`)
-    response.json(persons)
-})
+// app.get('/api/persons',(request,response)=>{
+//     // console.log(`get method worked`)
+//     response.json(persons)
+// })
+
 app.get('/info',(request,response)=>{
   const entry = persons.length
   console.log(entry)
