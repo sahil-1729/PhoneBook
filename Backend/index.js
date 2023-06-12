@@ -147,19 +147,27 @@ app.get('/info',(request,response)=>{
   console.log(when)
   response.send(`<div>Phonebook has info for ${entry} people <br/>${when}</div>`)
 })
-//GET INDIVIDUAL CONTACTS
+
 app.get('/api/persons/:id',(request,response)=>{
-  const id = Number(request.params.id)
-  // console.log(id,typeof id)
-  const ob = persons.find(val => val.id === id)
-  
-  if(ob){    
-  // console.log(ob)
-  response.json(ob)
-  }else{
-    response.status(404).send(`The contact is not found`)
-  }
+  console.log(`request id ${request.params.id}`)
+  contact.findById(request.params.id).then(result=>{
+    response.json(result)
+  })
 })
+//GET INDIVIDUAL CONTACTS
+// app.get('/api/persons/:id',(request,response)=>{
+//   const id = Number(request.params.id)
+//   // console.log(id,typeof id)
+//   const ob = persons.find(val => val.id === id)
+  
+//   if(ob){    
+//   // console.log(ob)
+//   response.json(ob)
+//   }else{
+//     response.status(404).send(`The contact is not found`)
+//   }
+// })
+
 app.delete('/api/persons/:id',(request,response)=>{
   const id = Number(request.params.id)
   // console.log(id,typeof id)
@@ -180,6 +188,8 @@ const genId = ()=>{
     : 0
     return max + 1
 }
+
+
 app.post('/api/persons',(request,response)=>{
   const content = request.body
   // console.log(content)
