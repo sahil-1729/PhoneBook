@@ -24,7 +24,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 // app.use(morgan('dev'))
 
-app.use(express.json())
 let persons =[{
   "id": 1,
   "name": "Cal",
@@ -130,7 +129,7 @@ let persons =[{
 app.get('/api/persons',(request,response)=>{
   contact.find({})
   .then(result=>{
-    response.send(result)
+    response.json(result)
   })
 })
 
@@ -189,35 +188,56 @@ const genId = ()=>{
     return max + 1
 }
 
-
+app.use(express.json());
 app.post('/api/persons',(request,response)=>{
-  const content = request.body
-  // console.log(content)
-  // console.log(`generated id ${genId()}`)
-  if(!(content.name && content.number)){
-    return response.status(400).json({
-      "error" : "name or number is missing"
+  const body = request.body
+  console.log(`Here's the body ${body}`)
+  if(body === undefined){
+    response.status(400).json({
+      error : "object not recieved"
     })
   }
-  const decision = persons.find(val=>val.name===content.name)
-  if(decision){
-    return response.status(409).json({  
-      "error" : "name already exists"
-    })
-  }
-  // console.log(`name `,typeof content.name,`number `,typeof content.number)
-  const contact = {
-    id : genId(),
-    name : content.name,
-    number : content.number,
-  }
-  persons = persons.concat(contact)
-  console.log(...persons)
-  response.json(contact)
+  const nContact = new contact({
+    name : body.name,
+    number : body.number
+  })
+  // console.log(`Here's the new contact ${nContact}`)
+  nContact.save().then(result=>{
+    response.send(result)
+  })
+  .catch(error=>console.log(error))
+})
+// app.post('/api/persons',(request,response)=>{
+//   const content = request.body
+//   // console.log(content)
+//   // console.log(`generated id ${genId()}`)
+//   if(!(content.name && content.number)){
+//     return response.status(400).json({
+//       "error" : "name or number is missing"
+//     })
+//   }
+//   const decision = persons.find(val=>val.name===content.name)
+//   if(decision){
+//     return response.status(409).json({  
+//       "error" : "name already exists"
+//     })
+//   }
+//   // console.log(`name `,typeof content.name,`number `,typeof content.number)
+//   const contact = {
+//     id : genId(),
+//     name : content.name,
+//     number : content.number,
+//   }
+//   persons = persons.concat(contact)
+//   console.log(...persons)
+//   response.json(contact)
 
   
-})
+// })
+
+
 //JO bhi urls hoenge other than the above, they will get error as given below 
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({error:'unknown endpoint'})
 }
