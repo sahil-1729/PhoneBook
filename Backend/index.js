@@ -126,11 +126,12 @@ let persons =[{
   "number": "5764638542"
 }]
 
-app.get('/api/persons',(request,response)=>{
+app.get('/api/persons',(request,response,next)=>{
   contact.find({})
   .then(result=>{
     response.json(result)
   })
+  .catch(error=>next(error))
 })
 
 //GET ALL CONTACTS
@@ -147,11 +148,16 @@ app.get('/info',(request,response)=>{
   response.send(`<div>Phonebook has info for ${entry} people <br/>${when}</div>`)
 })
 
-app.get('/api/persons/:id',(request,response)=>{
-  console.log(`request id ${request.params.id}`)
+app.get('/api/persons/:id',(request,response,next)=>{
+  // console.log(`request id ${request.params.id}`)
   contact.findById(request.params.id).then(result=>{
+    if(result){    
     response.json(result)
+    }else{
+      response.status(400).end()
+    }
   })
+  .catch(error=>next(error))
 })
 //GET INDIVIDUAL CONTACTS
 // app.get('/api/persons/:id',(request,response)=>{
@@ -167,26 +173,32 @@ app.get('/api/persons/:id',(request,response)=>{
 //   }
 // })
 
-app.delete('/api/persons/:id',(request,response)=>{
-  const id = Number(request.params.id)
-  // console.log(id,typeof id)
-  const flag = persons.find(val=>val.id===id)
-  if(flag){
-  persons = persons.filter(val => val.id !== id)
-  console.log('successful')
-  // response.send(`deletion done`)
-  response.end()
-  }else{
-    response.status(404).end(`The contact does not exist`)
-  }
-  })
-const genId = ()=>{
+app.delete('/api/persons/:id',(request,response,next)=>{
+  contact.findByIdAndDelete(request.params.id)
+  .then(result=>response.status(204).end())
+  .catch(error=>next(error))
+})
+// app.delete('/api/persons/:id',(request,response)=>{
+//   const id = Number(request.params.id)
+//   // console.log(id,typeof id)
+//   const flag = persons.find(val=>val.id===id)
+//   if(flag){
+//   persons = persons.filter(val => val.id !== id)
+//   console.log('successful')
+//   // response.send(`deletion done`)
+//   response.end()
+//   }else{
+//     response.status(404).end(`The contact does not exist`)
+//   }
+//   })
 
-    const max = persons.length>0 
-    ? Math.max(...persons.map(val=>val.id)) 
-    : 0
-    return max + 1
-}
+// const genId = ()=>{
+
+//     const max = persons.length>0 
+//     ? Math.max(...persons.map(val=>val.id)) 
+//     : 0
+//     return max + 1
+// }
 
 app.use(express.json());
 app.post('/api/persons',(request,response)=>{
@@ -242,6 +254,15 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({error:'unknown endpoint'})
 }
 app.use(unknownEndpoint)
+
+const errorHandler = (error,request,response,next) => {
+  console.error(error.message)
+  if(error.name === 'CastError'){
+    response.status(400).send({error : 'malformatted id'})
+  }
+  next(error)
+}
+app.use(errorHandler)
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
