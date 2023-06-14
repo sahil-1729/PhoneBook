@@ -119,10 +119,10 @@ const App = () => {
 
       event.preventDefault()
       var decision = (newName === '' && newNumber === '') ? alert("Please enter your name and number") : (newName === '') ? alert("Please enter your name") : (newNumber === '') ? alert("Please enter your number") : true
-      if(isNaN(newNumber)){
-        alert(`The number entered is not a number!`)
-        decision = false
-      }
+      // if(isNaN(newNumber)){
+      //   alert(`The number entered is not a number!`)
+      //   decision = false
+      // }
       if(decision){
         const result = persons.reduce((dec,val)=>{
           if(newName === val.name){
@@ -176,7 +176,13 @@ const App = () => {
               setErrorM(null)
             },5000)
           })
-          .catch(error => console.log(error,error.data))
+          .catch(error => {
+          // console.log(`here's the error`,error.response.data.error)
+          setErrorM(`${error.response.data.error}`)
+          setTimeout(()=>{
+              setErrorM(null)
+            },5000)
+        })
           
         }
       }
@@ -187,7 +193,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h2>Phonebookkkkkkkk</h2>
       <Notify message={errorM}>
 
       </Notify>

@@ -202,7 +202,7 @@ app.delete('/api/persons/:id',(request,response,next)=>{
 // }
 
 app.use(express.json());
-app.post('/api/persons',(request,response)=>{
+app.post('/api/persons',(request,response,next)=>{
   const body = request.body
   console.log(`Here's the body ${body}`)
   if(body === undefined){
@@ -218,7 +218,7 @@ app.post('/api/persons',(request,response)=>{
   nContact.save().then(result=>{
     response.send(result)
   })
-  .catch(error=>console.log(error))
+  .catch(error=>next(error))
 })
 // app.post('/api/persons',(request,response)=>{
 //   const content = request.body
@@ -258,7 +258,7 @@ app.put('/api/persons/:id',(request,response,next)=>{
     name : body.name,
     number : body.number
   }
-  contact.findByIdAndUpdate(request.params.id,newContact,{new:true})
+  contact.findByIdAndUpdate(request.params.id,newContact,{new:true,runValidators:true,context:'query'})
   .then(result=>response.json(result))
   .catch(error=>next(error))
 })
@@ -272,6 +272,9 @@ const errorHandler = (error,request,response,next) => {
   console.error(error.message)
   if(error.name === 'CastError'){
     response.status(400).send({error : 'malformatted id'})
+  }
+  else if(error.name === 'ValidationError'){
+    response.status(400).json({error : error.message})
   }
   next(error)
 }

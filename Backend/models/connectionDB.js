@@ -8,8 +8,16 @@ mongoose.connect(url)
 .then(result=>console.log(`connected`))
 .catch(error=>console.log(`Error:${error}`))
 const personSchema = new mongoose.Schema({
-  name : String,
-  number : Number
+  name : {
+    type : String,
+    minLength : 3,
+    required : true
+  },
+  number : {
+    type : String,
+    minLength : [8,'Not a valid number'],
+    required : true
+  }
 })
 personSchema.set('toJSON',{
   transform: (document,returnedObject)=>{
