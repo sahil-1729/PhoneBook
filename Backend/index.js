@@ -152,10 +152,11 @@ app.get('/info',(request,response)=>{
 app.get('/api/persons/:id',(request,response,next)=>{
   // console.log(`request id ${request.params.id}`)
   contact.findById(request.params.id).then(result=>{
-    if(result){    
+    if(result){
+    console.log(`here's the result ${result}`)    
     response.json(result)
     }else{
-      response.status(400).end()
+      response.status(400).json({error:"id not found"})
     }
   })
   .catch(error=>next(error))
@@ -175,8 +176,16 @@ app.get('/api/persons/:id',(request,response,next)=>{
 // })
 
 app.delete('/api/persons/:id',(request,response,next)=>{
+  console.log(request.params.id)
   contact.findByIdAndDelete(request.params.id)
-  .then(result=>response.status(204).end())
+  .then(result=>{
+    if(result){
+      console.log(`delete success,${result}`)
+      response.status(204).end()
+    }else{
+      response.status(404).json({error:"Object not found"})
+    }
+    })
   .catch(error=>next(error))
 })
 // app.delete('/api/persons/:id',(request,response)=>{
