@@ -29,7 +29,7 @@ const personSchema = new mongoose.Schema({
   },
   number : {
     type : String,
-    minLength : [8,'Not a valid number'],
+    minLength : [8,'Password is too short'],
     validate : custom,
     required : true
   }
