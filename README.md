@@ -15,7 +15,8 @@ A simple phonebook application that allows users to create, delete, and search f
 * React: The frontend framework used to build the user interface.
 * Express: The Node.js framework used to create the server.
 * Node: The runtime environment used to run the server.
-* JSON: The data format used to store contact details.
+* MongoDB: NoSql database, used to store data(name and numbers in this project)
+* Mongoose: A library used to save javascript objects as mongo documents
 * Axios: The HTTP library used to make requests to the server.
 
 ## Deployment
