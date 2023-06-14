@@ -142,9 +142,19 @@ const App = () => {
                 setPersons(persons.map((val) => {
                   return val.id !== changeNoAfter.id ? val : changeNoAfter
                 }))
+
+                setErrorM(`MESSAGE: Contact ${response.name} has been updated!`)
+            setTimeout(()=>{
+              setErrorM(null)
+            },5000)
+
               })
               .catch(error => {
-                console.log(error.data)
+                // console.log(`here's the error`,error.response.data.error)
+                setErrorM(`${error.response.data.error}`)
+                setTimeout(()=>{
+                    setErrorM(null)
+                  },5000)
               })
               flag = false
               setNewName('')
@@ -193,7 +203,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebookkkkkkkk</h2>
+      <h2>Phonebook</h2>
       <Notify message={errorM}>
 
       </Notify>

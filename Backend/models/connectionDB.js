@@ -7,6 +7,20 @@ console.log(`conntecting to url ${url}`)
 mongoose.connect(url)
 .then(result=>console.log(`connected`))
 .catch(error=>console.log(`Error:${error}`))
+
+function validator(val){
+  const hyphen = val.indexOf('-')
+  if(hyphen === -1 || val.startsWith('-') || val.endsWith('-')){
+    return false
+  }
+  const pattern = /-/g
+  const numberHyphen = val.match(pattern)
+  // console.log(`number of hyphens`,numberHyphen)
+  return (hyphen-1 >= 1)&&(numberHyphen.length<2)
+}
+
+const custom = [validator,`Uh oh, it is not a valid number`]
+
 const personSchema = new mongoose.Schema({
   name : {
     type : String,
@@ -16,6 +30,7 @@ const personSchema = new mongoose.Schema({
   number : {
     type : String,
     minLength : [8,'Not a valid number'],
+    validate : custom,
     required : true
   }
 })
